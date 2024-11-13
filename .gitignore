@@ -1,0 +1,9 @@
+node_modules
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+#files
+/src/constants.js
