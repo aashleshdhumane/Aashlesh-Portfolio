@@ -32,7 +32,7 @@ const About = () => {
         <div className='flex flex-col justify-around'>
           <div className='sm:px-16 px-2'>
             <h2 className='text-4xl sm:text-5xl font-extrabold mt-2'>Introduction</h2>
-            <p className='mt-3 mb-6 text-[17px] max-w-3xl leading-[30px]'>👨‍💻 Hi, I'm Aashlesh Dhumane, a Computer Science graduate🎓,  a technology enthusiast with a passion for crafting robust backend systems. As a seasoned <a className='text-green-300 hover:text-green-500 duration-300' href='https://www.linkedin.com/in/aashleshdhumane/' target='_blank'>Software developer</a> I specialize in both Development and Automation🚀.
+            <p className='mt-3 mb-6 text-[17px] max-w-3xl leading-[30px]'>👨‍💻 Hi, I'm Aashlesh Dhumane, a Computer Science graduate🎓,  a technology enthusiast with a passion for crafting robust backend systems. As a seasoned <a className='text-green-300 hover:text-green-500 duration-300' href='https://www.linkedin.com/in/aashleshdhumane/' target='_blank' rel="noopener noreferrer">Software developer</a> I specialize in both Development and Automation🚀.
               <br />
               ✍️ As a technology enthusiast looking for a position in an intricate IT environment that is diverse and established in the IT
               industry. I promise to offer sound expertise with my smart automation attitude to succeed in the development of projects. </p>
