@@ -1,68 +1,105 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FiMenu, FiX } from 'react-icons/fi';
+
+const navItems = [
+  { label: 'Home',       to: '/'           },
+  { label: 'About',      to: '/about'      },
+  { label: 'Experience', to: '/experience' },
+  { label: 'Projects',   to: '/projects'   },
+  { label: 'Contact',    to: '/contact'    },
+];
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [open, setOpen]       = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { pathname }            = useLocation();
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
-  };
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-
-  const { pathname } = useLocation();
-
-  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
+    setOpen(false);
   }, [pathname]);
 
   return (
-    <nav className="bg-gray-800 p-4 text-white fixed w-full z-10 top-0" style={{ cursor: 'default' }}>
-      <div className="mx-auto text-center flex w-5/6 justify-between items-center">
-        
-        {/* Left links (Home, About) */}
-        <div className="hidden sm:flex space-x-4 items-center text-sm">
-          <Link to='/' className="hover:text-yellow-400">Home</Link>
-          <Link to='/about' className="hover:text-yellow-400">About</Link>
-        </div>
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? 'glass shadow-lg shadow-black/40' : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="group flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6c63ff] to-[#f72585] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform duration-200">
+              AD
+            </span>
+            <span className="font-bold text-white text-lg tracking-tight">
+              Aashlesh<span className="grad-text"> Dhumane</span>
+            </span>
+          </Link>
 
-        {/* Title with blue hover effect */}
-        <div className="text-3xl sm:text-2xl font-extrabold">
-          <Link to="/" className="hover:text-blue-400 transition-colors duration-300">Aashlesh Dhumane</Link> {/* Blue hover effect */}
-        </div>
-
-        {/* Right links (Projects, Experience, Contact) */}
-        <div className="hidden sm:flex space-x-4 items-center text-sm">
-          <Link to='/projects' className="hover:text-yellow-400">Projects</Link>
-          <Link to='/experience' className="hover:text-yellow-400">Experience</Link>
-          <Link to='/contact' className="hover:text-yellow-400">Contact</Link>
-        </div>
-
-        {/* Mobile menu button */}
-        <div className="sm:hidden">
-          <button onClick={toggleMobileMenu} className="text-xl focus:outline-none">
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
-        </div>
-
-        {/* Mobile menu overlay */}
-        <div className={`sm:hidden fixed top-0 left-0 w-full h-full bg-gray-800 text-center transition-transform duration-300 ${isMobileMenuOpen ? 'flex flex-col items-center justify-center' : 'hidden'}`}>
-          <button onClick={closeMobileMenu} className="text-xl absolute top-4 right-4 focus:outline-none">
-            ✕
-          </button>
-          <ul className="font-medium text-2xl space-y-4">
-            <li><Link to='/' onClick={closeMobileMenu}>Home</Link></li>
-            <li><Link to='/about' onClick={closeMobileMenu}>About</Link></li>
-            <li><Link to='/projects' onClick={closeMobileMenu}>Projects</Link></li>
-            <li><Link to='/experience' onClick={closeMobileMenu}>Experience</Link></li>
-            <li><Link to='/contact' onClick={closeMobileMenu}>Contact</Link></li>
+          {/* Desktop nav */}
+          <ul className="hidden md:flex items-center gap-7">
+            {navItems.map(({ label, to }) => (
+              <li key={to}>
+                <Link
+                  to={to}
+                  className={`nav-link ${pathname === to ? 'active' : ''}`}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
+
+          {/* Hire me CTA */}
+          <a
+            href="mailto:ashleshdhumane@gmail.com"
+            className="hidden md:block btn-glow text-sm"
+          >
+            <span>Hire Me</span>
+          </a>
+
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden text-white text-2xl focus:outline-none"
+            onClick={() => setOpen(v => !v)}
+            aria-label="Toggle menu"
+          >
+            {open ? <FiX /> : <FiMenu />}
+          </button>
         </div>
+      </nav>
+
+      {/* Mobile drawer */}
+      <div
+        className={`fixed inset-0 z-40 glass flex flex-col items-center justify-center gap-8 transition-all duration-300 md:hidden ${
+          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {navItems.map(({ label, to }) => (
+          <Link
+            key={to}
+            to={to}
+            onClick={() => setOpen(false)}
+            className={`text-2xl font-semibold transition-colors duration-200 ${
+              pathname === to ? 'text-white' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
+        <a href="mailto:ashleshdhumane@gmail.com" className="btn-glow mt-4">
+          <span>Hire Me</span>
+        </a>
       </div>
-    </nav>
+    </>
   );
 };
 

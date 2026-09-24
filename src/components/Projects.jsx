@@ -1,84 +1,137 @@
-import React from "react";
+import React, { useState } from 'react';
+import { projects } from '../constants';
+import { FaGithub } from 'react-icons/fa';
+import { FiExternalLink } from 'react-icons/fi';
 import Footer from './Footer';
-import rbtree from '../assets/rbtree.png'
-import monitor from '../assets/monitor.jpg'
 
-const ProjectCard = ({ image, title, description, git, technologies }) => {
-    return (
-        <div className="max-w-sm sm:max-w-sm md:max-w-sm bg-gray-900 border border-neutral-100 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            {/* Render project image */}
-            <a href={git} target="_blank" rel="noopener noreferrer">
-                <img className="w-full rounded-t-lg h-auto object-cover" src={image} alt={title} />
-            </a>
+const ProjectCard = ({ title, description, image, git, technologies, index }) => (
+  <div
+    className="glass glass-hover rounded-2xl overflow-hidden flex flex-col fade-in-up"
+    style={{ animationDelay: `${0.1 * index}s` }}
+  >
+    {/* Image */}
+    <div className="relative h-48 overflow-hidden">
+      <img
+        src={image}
+        alt={title}
+        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#060612] via-transparent to-transparent" />
+      {/* GitHub overlay button */}
+      <a
+        href={git}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-3 right-3 w-9 h-9 glass rounded-full flex items-center justify-center text-white hover:bg-purple-500/40 transition-colors"
+        aria-label="GitHub repository"
+      >
+        <FaGithub className="text-base" />
+      </a>
+    </div>
 
-            <div className="p-4 sm:p-6">
-                <a href={git} target="_blank" rel="noopener noreferrer">
-                    <h5 className="text-2xl sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-pink-500">
-                        {title}
-                    </h5>
-                </a>
-                <p className="font-normal text-sm sm:text-base md:text-lg text-gray-300 dark:text-gray-400">
-                    {description}
-                </p>
-            </div>
+    {/* Content */}
+    <div className="flex flex-col flex-1 p-6 gap-4">
+      <h3 className="text-white font-bold text-lg leading-snug">{title}</h3>
+      <p className="text-slate-400 text-sm leading-relaxed flex-1">{description}</p>
 
-            <div className='m-2 sm:m-4 lg:m-6 flex justify-between'>
-                <div className='flex flex-wrap gap-2 pl-2'>
-                    {technologies.map((tag, index) => (
-                        <p
-                            key={`${index}-${tag}`}
-                            className='text-[14px] text-blue-500'
-                        >
-                            #{tag}
-                        </p>
-                    ))}
-                </div>
+      {/* Tech tags */}
+      <div className="flex flex-wrap gap-2">
+        {technologies.map(tech => (
+          <span key={tech} className="tag">{tech}</span>
+        ))}
+      </div>
 
-                {/* GitHub link */}
-                <a href={git} target="_blank" rel="noopener noreferrer" className="text-red-300 border border-gray-200 rounded-lg shadow p-1 sm:p-2 lg:p-3 hover:text-green-500 duration-300">
-                    GitHub
-                </a>
-            </div>
-        </div>
-    );
-};
+      {/* Actions */}
+      <div className="pt-2 border-t border-white/5 flex items-center gap-4">
+        <a
+          href={git}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+        >
+          <FaGithub /> Source code
+        </a>
+        <a
+          href={git}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-sm text-purple-400 hover:text-purple-300 transition-colors ml-auto"
+        >
+          View <FiExternalLink className="text-xs" />
+        </a>
+      </div>
+    </div>
+  </div>
+);
 
 const Projects = () => {
-    return (
-        <div className="bg-black">
-            <div className="flex flex-wrap gap-7 justify-center items-center m-12 p-12">
-                {project.map((item, index) => (
-                    <ProjectCard
-                        key={index}
-                        image={item.image}
-                        title={item.title}
-                        description={item.description}
-                        git={item.git}
-                        technologies={item.technologies}
-                    />
-                ))}
-            </div>
-            <Footer />
-        </div>
-    );
-};
+  const [filter, setFilter] = useState('All');
 
-// Project data
-export const project = [
-    {
-        title: 'RB Tree - Top Down Insertion',
-        description: 'Red-Black Tree (RB Tree) Insertion – Top-Down Approach: In this approach, we balance the tree as we move from root to insertion without backtracking, splitting 4-nodes and rotating where necessary.',
-        image: rbtree,
-        git: 'https://github.com/aashleshdhumane/RBTree',
-        technologies: ['Java']
-    },
-    {
-        title: 'Monitoring the Alone Living Elderly People at Home using Surveillance System',
-        description: 'A video surveillance system that monitors elderly individuals living alone. It detects falls with 90% accuracy using video processing techniques such as background subtraction, human detection, contour detection, and alert generation.',
-        image: monitor,
-        git: 'https://github.com/aashleshdhumane/Monitoring-the-Alone-Living-Elderly-People-at-Home-using-Surveillance-System-',
-        technologies: ['Python', 'SMTP', 'Flask', 'CV2', 'Contours']
-    }
-];
+  const allTags = ['All', ...Array.from(new Set(projects.flatMap(p => p.technologies)))];
+  const visible  = filter === 'All'
+    ? projects
+    : projects.filter(p => p.technologies.includes(filter));
+
+  return (
+    <div className="relative bg-mesh min-h-screen pt-24">
+      <div className="orb w-96 h-96 top-0 left-1/2 -translate-x-1/2 bg-pink-500/10 -z-10" aria-hidden="true" />
+
+      <div className="max-w-6xl mx-auto px-6 pb-20">
+        {/* Header */}
+        <div className="fade-in-up mb-10">
+          <p className="section-tag mb-3">What I've built</p>
+          <h2 className="section-title">
+            My <span className="grad-text">Projects</span>
+          </h2>
+        </div>
+
+        {/* Filter pills */}
+        <div className="flex flex-wrap gap-2 mb-10 fade-in" style={{ animationDelay: '0.2s' }}>
+          {allTags.slice(0, 8).map(tag => (
+            <button
+              key={tag}
+              onClick={() => setFilter(tag)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                filter === tag
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+                  : 'glass text-slate-400 hover:text-white hover:border-purple-500/40'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+
+        {/* Grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {visible.map((proj, i) => (
+            <ProjectCard key={proj.title} {...proj} index={i} />
+          ))}
+        </div>
+
+        {visible.length === 0 && (
+          <p className="text-center text-slate-500 py-16">No projects match this filter.</p>
+        )}
+
+        {/* GitHub CTA */}
+        <div className="mt-16 text-center fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <p className="text-slate-400 mb-5">More projects available on GitHub</p>
+          <a
+            href="https://github.com/aashleshdhumane"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="btn-glow">
+              <span className="flex items-center gap-2"><FaGithub /> See All on GitHub</span>
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
 
 export default Projects;
